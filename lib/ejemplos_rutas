@@ -1,0 +1,92 @@
+//ejemplos de navegaciones flutter
+
+
+//========= ANONIMA ===========
+// En la Pantalla A, dentro de un onPressed:
+ElevatedButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SegundaPantalla(mensaje: "Hola desde Pantalla A"),
+      ),
+    );
+  },
+  child: const Text("Ir a Segunda Pantalla"),
+);
+
+
+//======= Nombrada =======
+void main() {
+  runApp(
+    MaterialApp(
+      initialRoute: '/', // Ruta inicial
+      routes: {
+        '/': (context) => const PantallaInicio(),
+        '/detalle': (context) => const PantallaDetalle(),
+      },
+    ),
+  );
+}
+
+
+// Navegar enviando un argumento opcional
+ElevatedButton(
+  onPressed: () {
+    Navigator.pushNamed(
+      context, 
+      '/detalle', 
+      arguments: 'Puntuación: 100', // Pasamos datos mediante arguments
+    );
+  },
+  child: const Text("Ir a Detalle"),
+);
+
+// Extraer el argumento en la pantalla de destino (PantallaDetalle):
+class PantallaDetalle extends StatelessWidget {
+  const PantallaDetalle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Recuperamos el argumento enviado
+    final String datos = ModalRoute.of(context)!.settings.arguments as String;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("Detalle")),
+      body: Center(child: Text(datos)),
+    );
+  }
+}
+
+
+//====== GENERADA ========
+
+
+MaterialApp(
+  initialRoute: '/',
+  onGenerateRoute: (RouteSettings settings) {
+    // Analizamos el nombre de la ruta a la que intentan ir
+    switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(builder: (_) => const PantallaInicio());
+      
+      case '/perfil':
+        // Extraemos y casteamos los argumentos con seguridad
+        final String nombreUsuario = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => PantallaPerfil(usuario: nombreUsuario),
+        );
+
+      default:
+        // Ruta por defecto o error 404
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text("Pantalla no encontrada")),
+          ),
+        );
+    }
+  },
+);
+
+
+Navigator.pushNamed(context, '/perfil', arguments: 'Moisés');
